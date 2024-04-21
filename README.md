@@ -35,8 +35,7 @@ This repository contains the implementation of the SpaceCoin (SPC) ERC20 token a
 
 The contracts have been deployed and verified on the Ethereum Sepolia testnet.
 
-- **SpaceCoin Contract:** [Deployed Contract](www.youtube.com)
-- **ICO Contract:** [Deployed Contract](contract_address)
+- **Contracts:** [Deployed Contract](https://sepolia.etherscan.io/token/0xb3bbdd9a920e9e3c5dacdf5cc26cf5808fe1e996#code)
 
 ## Test Coverage
 
