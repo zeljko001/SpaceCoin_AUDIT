@@ -20,7 +20,7 @@ contract SpaceCoin is ERC20 {
     // uint256 constant INITIAL_SUPPLY = 500000 * 10**18;
 
     /**
-     * @param _treasury addres of the account that will collect the taxes
+     * @param _treasury address of the account that will collect the taxes
      * 
      */
     constructor(address _treasury, address[] memory allowList) ERC20("SpaceCoin", "SPC") {

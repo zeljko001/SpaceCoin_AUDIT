@@ -7,6 +7,7 @@ This repository contains the implementation of the SpaceCoin (SPC) ERC20 token a
 ### Implemented Features
 
 - **SpaceCoin Token (ERC20)**
+
   - Minting of initial token supplies for treasury and ICO contract
     <details>
     <summary> Initial supply </summary>
@@ -14,20 +15,23 @@ This repository contains the implementation of the SpaceCoin (SPC) ERC20 token a
 
     Treasury 350_000
     </details>
+
   - Ability to toggle tax status, controllable by owner
 
 - **ICO Contract**
+
   - Phased ICO with SEED, GENERAL, and OPEN phases
   - Contribution function allowing users to contribute ETH
     <details>
      <summary>Rules</summary>
      Only users in allowList can contribute in SEED phase.
 
-     There is a limit of 1500 contributed ETH for users in SEED phase, and 1000 ETH in GENERAL phase.
-     
-     There is a total contribution limit of 15000ETH in SEED phase, and total contribution limit of 30000ETH in GENERAL and OPEN phase.
+    There is a limit of 1500 contributed ETH for users in SEED phase, and 1000 ETH in GENERAL phase.
+
+    There is a total contribution limit of 15000ETH in SEED phase, and total contribution limit of 30000ETH in GENERAL and OPEN phase.
     </details>
-  - Redemption function allowing users to redeem SPC tokens during the OPEN phase
+
+  - Redemption function allowing users to redeem SPC tokens during the OPEN phase (ETH to SPC ratio is 1:5)
   - Owner-controlled phase advancement
   - Owner-controlled pausing and resuming contributions and redemptions
 
@@ -47,6 +51,7 @@ The contracts have been deployed and verified on the Ethereum Sepolia testnet.
 | Total               | 100.00% (53/53) | 100.00% (61/61) | 91.67% (22/24) | 100.00% (12/12) |
 
 ## Future Work
+
 - **Withdrawing contributions** Implement functionality to withdraw the contributed ETH.
 - **Dynamic Treasury Address:** Implement functionality to allow changing the treasury address if required.
 - **Improved Testing:** Develop comprehensive test suites to ensure the contracts behave as expected under various conditions.
