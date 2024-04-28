@@ -118,10 +118,8 @@ contract ICO {
         require(currentPhase == Phase.OPEN, "Reediming is available only in the OPEN phase");
         uint256 contributedEth = userToContributedAmount[msg.sender];
         require(contributedEth > 0, "No contribution to redeem");
-        uint256 spcAmount = contributedEth * REEDEM_RATIO; // q? da li bi ovdje trebalo dodat aprove() funkciju,za isnos koji se salje, a ne da se mora pozvat u test prije toga
+        uint256 spcAmount = contributedEth * REEDEM_RATIO;
         userToContributedAmount[msg.sender] = 0;
-        // spaceCoin.approve(address(this), spcAmount);  // ovako da se to odradi?
-        //ili ovdje prosto koristiit transfer funkciju umjesto transferFrom
         bool success = spaceCoin.transferFrom(address(this), msg.sender, spcAmount);
         if (success) {
             emit Redeming(msg.sender, spcAmount);

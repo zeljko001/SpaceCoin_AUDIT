@@ -51,7 +51,7 @@ contract SpaceCoin is ERC20 {
     function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
         uint256 taxAmount = 0;
         if (isTaxEnabled) {
-            taxAmount = (amount * TAX_PERCENTAGE) / 100; //   100 : TAX_PERCENTAGE = amount : taxAmount
+            taxAmount = (amount * TAX_PERCENTAGE) / 100;
             super.transferFrom(sender, i_treasury, taxAmount);
         }
         super.transferFrom(sender, recipient, amount - taxAmount);
