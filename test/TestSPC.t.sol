@@ -7,14 +7,13 @@ import {SpaceCoin} from "../src/SpaceCoin.sol";
 import {Deploy} from "../script/Deploy.s.sol";
 
 contract TestSPC is Test {
-
     SpaceCoin public spaceCoin;
     Deploy public deployer;
     ICO public ico;
 
     uint256 private constant ICO_SUPPLY = 150000;
     uint256 private constant TREASURY_SUPPLY = 350000;
-    uint256 private constant PRECISSION = 10**18;
+    uint256 private constant PRECISSION = 10 ** 18;
     uint256 private constant STARTING_USER_BALANCE = 1 ether;
     uint256 public constant REEDEM_RATIO = 5;
     uint256 public constant STARTING_USER_BALANCE_OVER_LIMIT = 2000 ether;
@@ -27,10 +26,10 @@ contract TestSPC is Test {
         (spaceCoin, ico) = deployer.run();
     }
 
-    function testStartingTreasuryAndIcoBalance() public view{
-        assertEq(spaceCoin.balanceOf(address(ico)), ICO_SUPPLY*PRECISSION);
+    function testStartingTreasuryAndIcoBalance() public view {
+        assertEq(spaceCoin.balanceOf(address(ico)), ICO_SUPPLY * PRECISSION);
         address treasury = spaceCoin.getTreasuryAddress();
-        assertEq(spaceCoin.balanceOf(treasury), TREASURY_SUPPLY*PRECISSION);
+        assertEq(spaceCoin.balanceOf(treasury), TREASURY_SUPPLY * PRECISSION);
     }
 
     function testGetterDoNotRevert() public view {
@@ -38,19 +37,20 @@ contract TestSPC is Test {
         spaceCoin.getIcoContractAddress();
         spaceCoin.getTreasuryAddress();
     }
-    
+
     function testOnlyOwnerCanChangeTaxStatus(address user) public {
-        if (user != spaceCoin.i_owner()){
+        if (user != spaceCoin.i_owner()) {
             vm.prank(user);
             vm.expectRevert();
             spaceCoin.changeTaxStatus();
         }
     }
+
     function testOwnerCanChangeTaxStatus() public {
         bool initialStatus = spaceCoin.isTaxEnabled();
         vm.prank(spaceCoin.i_owner());
         spaceCoin.changeTaxStatus();
-        assert(spaceCoin.isTaxEnabled()==!initialStatus);
+        assert(spaceCoin.isTaxEnabled() == !initialStatus);
     }
 
     function testTaxIsCollected() public {
@@ -65,29 +65,35 @@ contract TestSPC is Test {
         vm.deal(contributor, STARTING_USER_BALANCE);
 
         vm.prank(address(ico));
-        spaceCoin.approve(address(ico), ICO_SUPPLY*PRECISSION);
-        
+        spaceCoin.approve(address(ico), ICO_SUPPLY * PRECISSION);
+
         vm.startPrank(contributor);
         ico.contribute{value: STARTING_USER_BALANCE}();
         ico.redeem();
         vm.stopPrank();
-        assertEq(STARTING_USER_BALANCE*REEDEM_RATIO*98/100,spaceCoin.balanceOf(contributor));
-        assertEq(TREASURY_SUPPLY*PRECISSION + STARTING_USER_BALANCE*REEDEM_RATIO*2/100, spaceCoin.balanceOf(spaceCoin.getTreasuryAddress()));
+        assertEq(STARTING_USER_BALANCE * REEDEM_RATIO * 98 / 100, spaceCoin.balanceOf(contributor));
+        assertEq(
+            TREASURY_SUPPLY * PRECISSION + STARTING_USER_BALANCE * REEDEM_RATIO * 2 / 100,
+            spaceCoin.balanceOf(spaceCoin.getTreasuryAddress())
+        );
     }
+
     function testOnlyOwnerCanToggleContributingPaused(address user) public {
-        if (user != ico.i_owner()){
+        if (user != ico.i_owner()) {
             vm.prank(user);
             vm.expectRevert();
             ico.toggleContributePause();
         }
     }
+
     function testOnlyOwnerCanToggleRedeemingPaused(address user) public {
-        if (user != ico.i_owner()){
+        if (user != ico.i_owner()) {
             vm.prank(user);
             vm.expectRevert();
             ico.toggleRedeemPause();
         }
     }
+
     function testToggleRedeemAndContributePaused() public {
         bool initialContributePaused = ico.isContributingPaused();
         bool initialRedeemingPaused = ico.isRedeemingPaused();
@@ -105,7 +111,7 @@ contract TestSPC is Test {
         address contributor = address(2); //address(2) can contribute in seed phase
         vm.deal(contributor, STARTING_USER_BALANCE);
         vm.expectRevert();
-        ico.contribute{value:STARTING_USER_BALANCE}();
+        ico.contribute{value: STARTING_USER_BALANCE}();
     }
 
     function testCanNotRedeemWhenRedeemingPaused() public {
@@ -118,7 +124,7 @@ contract TestSPC is Test {
         vm.deal(contributor, STARTING_USER_BALANCE);
 
         vm.prank(address(ico));
-        spaceCoin.approve(address(ico), ICO_SUPPLY*PRECISSION);
+        spaceCoin.approve(address(ico), ICO_SUPPLY * PRECISSION);
         vm.prank(contributor);
         ico.contribute{value: STARTING_USER_BALANCE}();
         vm.prank(contributor);
@@ -127,11 +133,12 @@ contract TestSPC is Test {
     }
 
     function testCanNotRedeemInSeedOrGeneralPhase() public {
-        address contributor = address(2); //address(2) can contribute in seed phase
+        // address contributor = address(2); //address(2) can contribute in seed phase
+        address contributor = 0x30C816eB8F5701b12687269F2601Cb6ff8A20510;
         vm.deal(contributor, STARTING_USER_BALANCE);
 
         vm.prank(address(ico));
-        spaceCoin.approve(address(ico), ICO_SUPPLY*PRECISSION);
+        spaceCoin.approve(address(ico), ICO_SUPPLY * PRECISSION);
 
         vm.prank(contributor);
 
@@ -145,7 +152,6 @@ contract TestSPC is Test {
         vm.expectRevert();
         vm.prank(contributor);
         ico.redeem();
-
     }
 
     function testCanNotContributeInSeedPhaseIfNotInAllowList(address contributor) public {
@@ -162,10 +168,12 @@ contract TestSPC is Test {
         vm.deal(contributor, STARTING_USER_BALANCE_OVER_LIMIT);
         vm.prank(contributor);
         vm.expectRevert();
-        ico.contribute{value:STARTING_USER_BALANCE_OVER_LIMIT}();
+        ico.contribute{value: STARTING_USER_BALANCE_OVER_LIMIT}();
     }
+
     function testRevertsIfExceedIndividualLimitInGeneralPhase() public {
-        address contributor = address(2);
+        //address contributor = address(2);
+        address contributor = 0xB9e1ED8Cc46483e9b5901326cbF8381b9b200905;
         vm.deal(contributor, STARTING_USER_BALANCE_OVER_LIMIT);
         vm.prank(contributor);
         ico.contribute{value: STARTING_USER_BALANCE}();
@@ -230,8 +238,8 @@ contract TestSPC is Test {
         ico.advancePhase(2);
     }
 
-    function testBadAdvancing(uint256 phase) public{
-        if (phase!=0 && phase!=1) {
+    function testBadAdvancing(uint256 phase) public {
+        if (phase != 0 && phase != 1) {
             vm.prank(ico.i_owner());
             vm.expectRevert();
             ico.advancePhase(phase);
@@ -247,7 +255,7 @@ contract TestSPC is Test {
     function testAdvancingFromGeneral() public {
         vm.startPrank(ico.i_owner());
         ico.advancePhase(0);
-        ico.advancePhase(1);       
+        ico.advancePhase(1);
         vm.stopPrank();
         assert(ico.currentPhase() == ICO.Phase.OPEN);
     }
@@ -257,10 +265,33 @@ contract TestSPC is Test {
         vm.prank(spaceCoin.i_owner());
         spaceCoin.changeTaxStatus();
         vm.prank(address(ico));
-        spaceCoin.approve(address(ico), ICO_SUPPLY*PRECISSION);
+        spaceCoin.approve(address(ico), ICO_SUPPLY * PRECISSION);
         vm.prank(address(ico));
         spaceCoin.transfer(receiver, STARTING_USER_BALANCE);
-        assertEq(STARTING_USER_BALANCE*98/100, spaceCoin.balanceOf(receiver));
-        assertEq(TREASURY_SUPPLY*PRECISSION + STARTING_USER_BALANCE*2/100, spaceCoin.balanceOf(spaceCoin.getTreasuryAddress()));
+        assertEq(STARTING_USER_BALANCE * 98 / 100, spaceCoin.balanceOf(receiver));
+        assertEq(
+            TREASURY_SUPPLY * PRECISSION + STARTING_USER_BALANCE * 2 / 100,
+            spaceCoin.balanceOf(spaceCoin.getTreasuryAddress())
+        );
+    }
+
+    //////////////////////////////////////////////////////////
+    ////////////////////  AUDIT  /////////////////////////////
+    //////////////////////////////////////////////////////////
+
+    function testCanNotReedem() public {
+        address allowListMember = 0x30C816eB8F5701b12687269F2601Cb6ff8A20510;
+
+        vm.deal(allowListMember, STARTING_USER_BALANCE);
+        vm.prank(allowListMember);
+        ico.contribute{value: STARTING_USER_BALANCE}();
+        vm.startPrank(ico.i_owner());
+        ico.advancePhase(0);
+        ico.advancePhase(1);
+        vm.stopPrank();
+        //Now it is OPEN phase, and allowListMember sholud be able to redeem SpaceCoin
+        vm.prank(allowListMember);
+        vm.expectRevert();
+        ico.redeem();
     }
 }
